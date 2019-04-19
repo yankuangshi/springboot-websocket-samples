@@ -1,8 +1,10 @@
-package com.github.kyan.websocket;
+package com.github.kyan.websocket.server;
 
-import com.github.kyan.websocket.server.HttpServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -10,18 +12,23 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
-public class Server {
+@Slf4j
+@Component
+public class WebSocketServer implements ApplicationRunner {
 
-
-    private static final int PORT = 9000;
-
-    public static void main(String[] args) {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        //启动服务器
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
+            log.info("Starting websocket server...");
             ServerBootstrap b = new ServerBootstrap();
-            b.option(ChannelOption.SO_BACKLOG, 1024);
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
@@ -34,7 +41,8 @@ public class Server {
                             pipeline.addLast(new HttpServerHandler());
                         }
                     });
-            Channel ch = b.bind(PORT).sync().channel();
+            Channel ch = b.bind(Constants.PORT).sync().channel();
+            log.info("WebSocket server started, waiting for connection from client ...");
             ch.closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -43,6 +51,5 @@ public class Server {
             workerGroup.shutdownGracefully();
         }
     }
-
 
 }

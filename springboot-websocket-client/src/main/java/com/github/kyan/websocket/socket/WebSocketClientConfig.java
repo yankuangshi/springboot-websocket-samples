@@ -1,6 +1,5 @@
 package com.github.kyan.websocket.socket;
 
-import com.github.kyan.websocket.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.WebSocketHandler;

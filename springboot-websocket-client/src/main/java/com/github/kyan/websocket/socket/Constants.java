@@ -1,4 +1,4 @@
-package com.github.kyan.websocket;
+package com.github.kyan.websocket.socket;
 
 public class Constants {
 

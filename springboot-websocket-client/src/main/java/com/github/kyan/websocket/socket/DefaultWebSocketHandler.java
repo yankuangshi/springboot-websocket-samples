@@ -13,7 +13,7 @@ public class DefaultWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info("WebSocket connection established with server: {}", session);
-        session.sendMessage(new TextMessage("Coucou"));
+        session.sendMessage(new TextMessage("Hello World"));
     }
 
     @Override
